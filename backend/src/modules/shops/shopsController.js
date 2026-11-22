@@ -1,19 +1,15 @@
-import { Response } from 'express';
 import { query } from '../../database/db.js';
-import { AuthenticatedRequest } from '../../types/index.js';
 
-export const getCurrentShop = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getCurrentShop = async (req, res) => {
   try {
     const shopId = req.shopId;
     if (!shopId) {
-      res.status(400).json({ success: false, message: 'Shop ID context missing' });
-      return;
+      return res.status(400).json({ success: false, message: 'Shop ID context missing' });
     }
 
     const shopResult = await query(`SELECT * FROM shops WHERE id = $1`, [shopId]);
     if (shopResult.rowCount === 0) {
-      res.status(404).json({ success: false, message: 'Shop not found' });
-      return;
+      return res.status(404).json({ success: false, message: 'Shop not found' });
     }
 
     const modulesResult = await query(
@@ -36,13 +32,13 @@ export const getCurrentShop = async (req: AuthenticatedRequest, res: Response): 
       shop: shopResult.rows[0],
       modules: modulesResult.rows,
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[getCurrentShop Error]:', err);
     res.status(500).json({ success: false, message: 'Failed to retrieve shop profile', error: err.message });
   }
 };
 
-export const updateCurrentShop = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const updateCurrentShop = async (req, res) => {
   try {
     const shopId = req.shopId;
     const {
@@ -59,8 +55,7 @@ export const updateCurrentShop = async (req: AuthenticatedRequest, res: Response
     } = req.body;
 
     if (!name) {
-      res.status(400).json({ success: false, message: 'Shop name is required' });
-      return;
+      return res.status(400).json({ success: false, message: 'Shop name is required' });
     }
 
     const updateQuery = `
@@ -96,8 +91,7 @@ export const updateCurrentShop = async (req: AuthenticatedRequest, res: Response
     ]);
 
     if (result.rowCount === 0) {
-      res.status(404).json({ success: false, message: 'Shop not found' });
-      return;
+      return res.status(404).json({ success: false, message: 'Shop not found' });
     }
 
     res.json({
@@ -105,7 +99,7 @@ export const updateCurrentShop = async (req: AuthenticatedRequest, res: Response
       message: 'Shop profile updated successfully.',
       shop: result.rows[0],
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[updateCurrentShop Error]:', err);
     res.status(500).json({ success: false, message: 'Failed to update shop profile', error: err.message });
   }

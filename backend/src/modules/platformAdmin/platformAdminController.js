@@ -1,45 +1,43 @@
-import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { query } from '../../database/db.js';
 import { config } from '../../config/index.js';
-import { AuthenticatedRequest, AuthUserPayload } from '../../types/index.js';
 
-export const platformLogin = async (req: Request, res: Response): Promise<void> => {
+export const platformLogin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { user_id, password } = req.body;
 
-    if (!email || !password) {
-      res.status(400).json({ success: false, message: 'Email and password are required.' });
-      return;
+    if (!user_id || !password) {
+      return res.status(400).json({ success: false, message: 'Platform Super Admin User ID and password are required.' });
     }
 
+    const cleanUserId = String(user_id).trim().toLowerCase();
+
     const result = await query(
-      `SELECT * FROM platform_users WHERE LOWER(email) = LOWER($1)`,
-      [email]
+      `SELECT * FROM platform_users WHERE LOWER(user_id) = LOWER($1) OR LOWER(email) = LOWER($1)`,
+      [cleanUserId]
     );
 
     if (result.rowCount === 0) {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
-        message: 'Invalid platform super admin credentials.',
+        message: `Invalid credentials. No Platform Super Admin account with User ID '${cleanUserId}'.`,
       });
-      return;
     }
 
     const admin = result.rows[0];
     const passwordMatch = await bcrypt.compare(password, admin.password_hash);
 
     if (!passwordMatch) {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
-        message: 'Invalid platform super admin credentials.',
+        message: 'Invalid platform super admin password.',
       });
-      return;
     }
 
-    const payload: AuthUserPayload = {
+    const payload = {
       userId: admin.id,
+      user_id: admin.user_id,
       email: admin.email,
       shopId: 'PLATFORM_GLOBAL',
       role: 'PLATFORM_SUPER_ADMIN',
@@ -49,7 +47,7 @@ export const platformLogin = async (req: Request, res: Response): Promise<void> 
     };
 
     const token = jwt.sign(payload, config.jwtSecret, {
-      expiresIn: config.jwtExpiresIn as any,
+      expiresIn: config.jwtExpiresIn,
     });
 
     res.json({
@@ -58,37 +56,39 @@ export const platformLogin = async (req: Request, res: Response): Promise<void> 
       token,
       platform_user: {
         id: admin.id,
+        user_id: admin.user_id,
         email: admin.email,
         full_name: admin.full_name,
         role: admin.role,
       },
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[Platform Login Error]:', err);
     res.status(500).json({ success: false, message: 'Internal server error', error: err.message });
   }
 };
 
-export const getPlatformMe = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getPlatformMe = async (req, res) => {
   try {
     if (!req.user || !req.user.isPlatformAdmin) {
-      res.status(403).json({ success: false, message: 'Access denied.' });
-      return;
+      return res.status(403).json({ success: false, message: 'Access denied.' });
     }
 
-    const result = await query(`SELECT id, email, full_name, role FROM platform_users WHERE id = $1`, [req.user.userId]);
+    const result = await query(
+      `SELECT id, user_id, email, full_name, role FROM platform_users WHERE id = $1`,
+      [req.user.userId]
+    );
     if (result.rowCount === 0) {
-      res.status(404).json({ success: false, message: 'Platform user not found.' });
-      return;
+      return res.status(404).json({ success: false, message: 'Platform user not found.' });
     }
 
     res.json({ success: true, platform_user: result.rows[0] });
-  } catch (err: any) {
+  } catch (err) {
     res.status(500).json({ success: false, message: 'Server error', error: err.message });
   }
 };
 
-export const getShops = async (_req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getShops = async (_req, res) => {
   try {
     const shopsResult = await query(
       `SELECT s.*, 
@@ -111,31 +111,28 @@ export const getShops = async (_req: AuthenticatedRequest, res: Response): Promi
     );
 
     res.json({ success: true, shops: shopsResult.rows });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[Platform getShops Error]:', err);
     res.status(500).json({ success: false, message: 'Failed to retrieve shops', error: err.message });
   }
 };
 
-export const createShop = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const createShop = async (req, res) => {
   try {
     const { name, slug, tagline, logo_url, banner_url, address, phone, email, gstin, currency, currency_symbol, initial_admin } = req.body;
 
     if (!name || !slug) {
-      res.status(400).json({ success: false, message: 'Shop name and slug are required.' });
-      return;
+      return res.status(400).json({ success: false, message: 'Shop name and slug are required.' });
     }
 
     const shopId = `shop-${Date.now()}`;
 
-    // Insert shop
     await query(
       `INSERT INTO shops (id, name, slug, tagline, logo_url, banner_url, address, phone, email, gstin, currency, currency_symbol, is_active)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, TRUE)`,
       [shopId, name, slug.toLowerCase().trim(), tagline || '', logo_url || '', banner_url || '', address || '', phone || '', email || '', gstin || '', currency || 'INR', currency_symbol || '₹']
     );
 
-    // Initialize 4 core modules for the new shop
     const defaultModules = [
       ['inventory', 'Shop & Inventory', 'Jewellery, Gems, Purchases & Sales Billing', 'Gem', true],
       ['hr', 'Admin, HR & Clients', 'Staff Roster & Permissions', 'Users', true],
@@ -151,16 +148,23 @@ export const createShop = async (req: AuthenticatedRequest, res: Response): Prom
       );
     }
 
-    // Optionally create initial admin user for this shop
-    if (initial_admin && initial_admin.email && initial_admin.password) {
+    if (initial_admin && initial_admin.user_id && initial_admin.password) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(initial_admin.password, salt);
       const userId = `usr-admin-${Date.now()}`;
 
       await query(
-        `INSERT INTO users (id, shop_id, full_name, email, password_hash, role, hr_level, permissions, is_active, designation)
-         VALUES ($1, $2, $3, $4, $5, 'ADMIN', 'DIRECTOR', $6, TRUE, 'Managing Director')`,
-        [userId, shopId, initial_admin.full_name || `${name} Admin`, initial_admin.email, hashedPassword, ['inventory:view', 'inventory:create', 'inventory:edit', 'inventory:delete', 'inventory:purchase', 'inventory:sale', 'shop:manage', 'hr:view', 'hr:manage', 'accounting:view', 'ecommerce:view']]
+        `INSERT INTO users (id, shop_id, user_id, full_name, email, password_hash, role, hr_level, permissions, is_active, designation)
+         VALUES ($1, $2, $3, $4, $5, $6, 'ADMIN', 'DIRECTOR', $7, TRUE, 'Managing Director')`,
+        [
+          userId,
+          shopId,
+          String(initial_admin.user_id).trim().toLowerCase(),
+          initial_admin.full_name || `${name} Admin`,
+          initial_admin.email || '',
+          hashedPassword,
+          ['inventory:view', 'inventory:create', 'inventory:edit', 'inventory:delete', 'inventory:purchase', 'inventory:sale', 'shop:manage', 'hr:view', 'hr:manage', 'accounting:view', 'ecommerce:view'],
+        ]
       );
     }
 
@@ -171,20 +175,19 @@ export const createShop = async (req: AuthenticatedRequest, res: Response): Prom
       message: 'New shop created successfully.',
       shop: createdShop.rows[0],
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[createShop Error]:', err);
     res.status(500).json({ success: false, message: 'Failed to create shop.', error: err.message });
   }
 };
 
-export const toggleModule = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const toggleModule = async (req, res) => {
   try {
     const { shopId } = req.params;
     const { module_key, is_enabled } = req.body;
 
     if (!module_key || typeof is_enabled !== 'boolean') {
-      res.status(400).json({ success: false, message: 'module_key and boolean is_enabled are required.' });
-      return;
+      return res.status(400).json({ success: false, message: 'module_key and boolean is_enabled are required.' });
     }
 
     const checkMod = await query(
@@ -193,8 +196,7 @@ export const toggleModule = async (req: AuthenticatedRequest, res: Response): Pr
     );
 
     if (checkMod.rowCount === 0) {
-      // Insert module entry
-      const modNames: Record<string, string> = {
+      const modNames = {
         inventory: 'Shop & Inventory',
         hr: 'Admin, HR & Clients',
         accounting: 'Accounting & Billing',
@@ -216,13 +218,13 @@ export const toggleModule = async (req: AuthenticatedRequest, res: Response): Pr
       success: true,
       message: `Module '${module_key}' for shop '${shopId}' set to ${is_enabled ? 'ENABLED' : 'DISABLED'}.`,
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[toggleModule Error]:', err);
     res.status(500).json({ success: false, message: 'Failed to update module status.', error: err.message });
   }
 };
 
-export const getPlatformStats = async (_req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getPlatformStats = async (_req, res) => {
   try {
     const shopCount = await query(`SELECT COUNT(*) as count FROM shops WHERE is_active = TRUE`);
     const userCount = await query(`SELECT COUNT(*) as count FROM users WHERE is_active = TRUE`);
@@ -240,7 +242,7 @@ export const getPlatformStats = async (_req: AuthenticatedRequest, res: Response
         total_transaction_volume: parseFloat(txnCount.rows[0].total_vol),
       },
     });
-  } catch (err: any) {
+  } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to fetch platform stats', error: err.message });
   }
 };

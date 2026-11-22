@@ -9,7 +9,7 @@ pool.on('error', (err) => {
   console.error('[PostgreSQL] Unexpected client error:', err.message);
 });
 
-export const query = async (text: string, params?: any[]) => {
+export const query = async (text, params) => {
   const start = Date.now();
   try {
     const res = await pool.query(text, params);
@@ -18,7 +18,7 @@ export const query = async (text: string, params?: any[]) => {
       console.log(`[PostgreSQL Slow Query] ${duration}ms: ${text.slice(0, 100)}...`);
     }
     return res;
-  } catch (err: any) {
+  } catch (err) {
     console.error(`[PostgreSQL Query Error] ${err.message}\nQuery: ${text}`);
     throw err;
   }
@@ -29,12 +29,12 @@ export const getClient = async () => {
   return client;
 };
 
-export const testConnection = async (): Promise<boolean> => {
+export const testConnection = async () => {
   try {
     const res = await pool.query('SELECT NOW()');
     console.log('[PostgreSQL] Connected successfully at:', res.rows[0].now);
     return true;
-  } catch (err: any) {
+  } catch (err) {
     console.warn('[PostgreSQL Connection Warning]:', err.message);
     return false;
   }

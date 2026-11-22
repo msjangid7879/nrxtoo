@@ -11,10 +11,7 @@ import { platformAdminGuard } from '../../middleware/platformAdminGuard.js';
 
 const router = Router();
 
-// Public Platform Login
 router.post('/login', platformLogin);
-
-// Protected Platform Super Admin Routes
 router.get('/me', platformAdminGuard, getPlatformMe);
 router.get('/stats', platformAdminGuard, getPlatformStats);
 router.get('/shops', platformAdminGuard, getShops);

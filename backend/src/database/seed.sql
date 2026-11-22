@@ -1,24 +1,25 @@
 -- NRXTOO Multi-Tenant Jewellery & Stones Suite
 -- Seed Data SQL Script
 
--- Password hashes for all seed users will be initialized via init-db.ts using bcrypt
+-- Password hashes for all seed users will be initialized via init-db.js using bcrypt
 -- For reference:
--- superadmin@nrxtoo.com: SuperAdmin123!
--- admin@nrxtoo.com: Admin123!
--- senior.hr@nrxtoo.com: HrSenior123!
--- junior.hr@nrxtoo.com: HrJunior123!
--- staff@nrxtoo.com: Staff123!
+-- superadmin: SuperAdmin123!
+-- admin_royal: Admin123!
+-- senior_hr: HrSenior123!
+-- junior_hr: HrJunior123!
+-- staff_kavita: Staff123!
 
 -- 1. Insert Platform Super Admin
-INSERT INTO platform_users (id, email, password_hash, full_name, role)
+INSERT INTO platform_users (id, user_id, email, password_hash, full_name, role)
 VALUES (
     'plat-user-superadmin-01',
+    'superadmin',
     'superadmin@nrxtoo.com',
     '$2a$10$w9fR53Q2x5eJpD/K4nJ.eOzXzYh3W2g.4jG0N6l6Y4qZ0u1uJqJ6G',
     'NRXTOO Platform Super Admin',
     'PLATFORM_SUPER_ADMIN'
 )
-ON CONFLICT (email) DO UPDATE 
+ON CONFLICT (user_id) DO UPDATE 
 SET full_name = EXCLUDED.full_name;
 
 -- 2. Insert Sample Primary Shop
@@ -82,32 +83,34 @@ VALUES
 ON CONFLICT (shop_id, module_key) DO UPDATE
 SET is_enabled = EXCLUDED.is_enabled;
 
--- 4. Sample Shop Users with Hierarchical Roles
--- Password for all is initialized by init-db.ts:
--- Admin: Admin123!
--- Senior HR: HrSenior123!
--- Junior HR: HrJunior123!
--- Staff: Staff123!
+-- 4. Sample Shop Users with Hierarchical Roles & Unique User IDs
+-- Password for all is initialized by init-db.js:
+-- admin_royal: Admin123!
+-- senior_hr: HrSenior123!
+-- junior_hr: HrJunior123!
+-- staff_kavita: Staff123!
 
-INSERT INTO users (id, shop_id, full_name, email, password_hash, role, hr_level, permissions, is_active, designation)
+INSERT INTO users (id, shop_id, user_id, full_name, email, password_hash, role, hr_level, permissions, is_active, designation)
 VALUES
 (
     'usr-admin-01',
     'shop-nrxtoo-royal-01',
+    'admin_royal',
     'Rajesh Verma',
-    'admin@nrxtoo.com',
+    'rajesh.admin@nrxtoo.com',
     '$2a$10$7q5QeS2M5GjQ/0oQ/a8G4.5WbI57pP5k7A7oE5.QWqHqW5hM8rN8O',
     'ADMIN',
     'DIRECTOR',
     ARRAY['inventory:view', 'inventory:create', 'inventory:edit', 'inventory:delete', 'inventory:purchase', 'inventory:sale', 'shop:manage', 'hr:view', 'hr:manage', 'accounting:view', 'ecommerce:view'],
     TRUE,
-    'Managing Director & Shop Owner'
+    'Shop Owner & Managing Director'
 ),
 (
     'usr-seniorhr-02',
     'shop-nrxtoo-royal-01',
+    'senior_hr',
     'Sunita Mehra',
-    'senior.hr@nrxtoo.com',
+    'sunita.hr@nrxtoo.com',
     '$2a$10$7q5QeS2M5GjQ/0oQ/a8G4.5WbI57pP5k7A7oE5.QWqHqW5hM8rN8O',
     'SENIOR_HR',
     'SENIOR',
@@ -118,8 +121,9 @@ VALUES
 (
     'usr-juniorhr-03',
     'shop-nrxtoo-royal-01',
+    'junior_hr',
     'Amitabh Saxena',
-    'junior.hr@nrxtoo.com',
+    'amitabh.hr@nrxtoo.com',
     '$2a$10$7q5QeS2M5GjQ/0oQ/a8G4.5WbI57pP5k7A7oE5.QWqHqW5hM8rN8O',
     'JUNIOR_HR',
     'JUNIOR',
@@ -130,8 +134,9 @@ VALUES
 (
     'usr-staff-04',
     'shop-nrxtoo-royal-01',
+    'staff_kavita',
     'Kavita Singhania',
-    'staff@nrxtoo.com',
+    'kavita.singhania@nrxtoo.com',
     '$2a$10$7q5QeS2M5GjQ/0oQ/a8G4.5WbI57pP5k7A7oE5.QWqHqW5hM8rN8O',
     'STAFF',
     'NONE',
@@ -139,7 +144,7 @@ VALUES
     TRUE,
     'Senior Jewellery Consultant & Billing Executive'
 )
-ON CONFLICT (shop_id, email) DO UPDATE
+ON CONFLICT (user_id) DO UPDATE
 SET full_name = EXCLUDED.full_name, role = EXCLUDED.role, hr_level = EXCLUDED.hr_level, permissions = EXCLUDED.permissions;
 
 -- 5. Sample Inventory Items (Jewellery & Stones)

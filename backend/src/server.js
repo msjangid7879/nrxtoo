@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Ensure upload directory exists
+// Ensure uploads folder exists
 const uploadPath = path.resolve(config.uploadDir);
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
@@ -28,7 +28,7 @@ if (!fs.existsSync(uploadPath)) {
 
 // Middlewares
 app.use(cors({
-  origin: '*', // Allow frontend dev server and direct calls
+  origin: '*',
   credentials: true,
 }));
 
@@ -43,6 +43,7 @@ app.get('/api/health', (_req, res) => {
   res.json({
     status: 'online',
     app: 'NRXTOO Multi-Tenant Jewellery & Stones Suite API',
+    runtime: 'Node.js (Pure JavaScript)',
     version: '1.0.0',
     timestamp: new Date().toISOString(),
   });
@@ -64,12 +65,11 @@ app.use(errorHandler);
 const PORT = config.port;
 app.listen(PORT, async () => {
   console.log(`====================================================`);
-  console.log(`✨ NRXTOO Jewellery & Stones Backend API Started ✨`);
+  console.log(`✨ NRXTOO Jewellery & Stones Backend API (JavaScript) ✨`);
   console.log(`   Local Server: http://localhost:${PORT}`);
   console.log(`   Health Check: http://localhost:${PORT}/api/health`);
   console.log(`====================================================`);
 
-  // Probe Database
   await testConnection();
 });
 

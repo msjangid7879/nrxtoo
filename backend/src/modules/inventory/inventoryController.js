@@ -1,14 +1,12 @@
-import { Response } from 'express';
 import { query } from '../../database/db.js';
-import { AuthenticatedRequest, InventoryCategory } from '../../types/index.js';
 
-export const getInventoryItems = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getInventoryItems = async (req, res) => {
   try {
     const shopId = req.shopId;
     const { category, search, status, sort_by = 'created_at', sort_dir = 'DESC' } = req.query;
 
     let sql = `SELECT * FROM inventory_items WHERE shop_id = $1`;
-    const params: any[] = [shopId];
+    const params = [shopId];
     let paramIndex = 2;
 
     if (category && (category === 'Jewellery' || category === 'Stones')) {
@@ -17,7 +15,7 @@ export const getInventoryItems = async (req: AuthenticatedRequest, res: Response
       paramIndex++;
     }
 
-    if (status && ['IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK'].includes(status as string)) {
+    if (status && ['IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK'].includes(status)) {
       sql += ` AND status = $${paramIndex}`;
       params.push(status);
       paramIndex++;
@@ -38,7 +36,7 @@ export const getInventoryItems = async (req: AuthenticatedRequest, res: Response
     }
 
     const safeSortCols = ['name', 'sku', 'selling_price', 'current_stock', 'created_at', 'category'];
-    const col = safeSortCols.includes(sort_by as string) ? sort_by : 'created_at';
+    const col = safeSortCols.includes(sort_by) ? sort_by : 'created_at';
     const dir = sort_dir === 'ASC' ? 'ASC' : 'DESC';
 
     sql += ` ORDER BY ${col} ${dir}`;
@@ -50,13 +48,13 @@ export const getInventoryItems = async (req: AuthenticatedRequest, res: Response
       count: result.rowCount,
       items: result.rows,
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[getInventoryItems Error]:', err);
     res.status(500).json({ success: false, message: 'Failed to retrieve inventory items', error: err.message });
   }
 };
 
-export const getInventoryStats = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getInventoryStats = async (req, res) => {
   try {
     const shopId = req.shopId;
 
@@ -89,30 +87,29 @@ export const getInventoryStats = async (req: AuthenticatedRequest, res: Response
         total_units: parseFloat(s.total_units),
       },
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[getInventoryStats Error]:', err);
     res.status(500).json({ success: false, message: 'Failed to get inventory stats', error: err.message });
   }
 };
 
-export const getInventoryItemById = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const getInventoryItemById = async (req, res) => {
   try {
     const { id } = req.params;
     const shopId = req.shopId;
 
     const result = await query(`SELECT * FROM inventory_items WHERE id = $1 AND shop_id = $2`, [id, shopId]);
     if (result.rowCount === 0) {
-      res.status(404).json({ success: false, message: 'Item not found' });
-      return;
+      return res.status(404).json({ success: false, message: 'Item not found' });
     }
 
     res.json({ success: true, item: result.rows[0] });
-  } catch (err: any) {
+  } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to fetch item', error: err.message });
   }
 };
 
-export const createInventoryItem = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const createInventoryItem = async (req, res) => {
   try {
     const shopId = req.shopId;
     const {
@@ -126,7 +123,6 @@ export const createInventoryItem = async (req: AuthenticatedRequest, res: Respon
       current_stock = 0,
       minimum_stock = 1,
       unit = 'pcs',
-      // Category: Jewellery specific
       metal_type,
       purity,
       gross_weight,
@@ -134,7 +130,6 @@ export const createInventoryItem = async (req: AuthenticatedRequest, res: Respon
       stone_weight,
       making_charges,
       huid_hallmark,
-      // Category: Stones specific
       stone_type,
       shape_cut,
       color,
@@ -145,19 +140,17 @@ export const createInventoryItem = async (req: AuthenticatedRequest, res: Respon
     } = req.body;
 
     if (!sku || !name || !category || selling_price === undefined) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: 'SKU, item name, category (Jewellery/Stones), and selling price are required.',
       });
-      return;
     }
 
     if (category !== 'Jewellery' && category !== 'Stones') {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "Category must be either 'Jewellery' or 'Stones'.",
       });
-      return;
     }
 
     const stockNum = parseFloat(current_stock) || 0;
@@ -190,7 +183,7 @@ export const createInventoryItem = async (req: AuthenticatedRequest, res: Respon
       shopId,
       sku.toUpperCase().trim(),
       name.trim(),
-      category as InventoryCategory,
+      category,
       description || null,
       image_url || null,
       parseFloat(cost_price) || 0,
@@ -199,7 +192,6 @@ export const createInventoryItem = async (req: AuthenticatedRequest, res: Respon
       minStockNum,
       unit,
       status,
-      // Jewellery specific
       category === 'Jewellery' ? metal_type || null : null,
       category === 'Jewellery' ? purity || null : null,
       category === 'Jewellery' ? (gross_weight ? parseFloat(gross_weight) : null) : null,
@@ -207,7 +199,6 @@ export const createInventoryItem = async (req: AuthenticatedRequest, res: Respon
       category === 'Jewellery' ? (stone_weight ? parseFloat(stone_weight) : null) : null,
       category === 'Jewellery' ? (making_charges ? parseFloat(making_charges) : null) : null,
       category === 'Jewellery' ? (huid_hallmark ? huid_hallmark.toUpperCase().trim() : null) : null,
-      // Stones specific
       category === 'Stones' ? stone_type || null : null,
       category === 'Stones' ? shape_cut || null : null,
       category === 'Stones' ? color || null : null,
@@ -224,17 +215,16 @@ export const createInventoryItem = async (req: AuthenticatedRequest, res: Respon
       message: `${category} item created successfully.`,
       item: result.rows[0],
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[createInventoryItem Error]:', err);
     if (err.code === '23505') {
-      res.status(409).json({ success: false, message: 'An item with this SKU already exists in this shop.' });
-      return;
+      return res.status(409).json({ success: false, message: 'An item with this SKU already exists in this shop.' });
     }
     res.status(500).json({ success: false, message: 'Failed to create item', error: err.message });
   }
 };
 
-export const updateInventoryItem = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const updateInventoryItem = async (req, res) => {
   try {
     const { id } = req.params;
     const shopId = req.shopId;
@@ -247,7 +237,6 @@ export const updateInventoryItem = async (req: AuthenticatedRequest, res: Respon
       current_stock,
       minimum_stock,
       unit,
-      // Jewellery specific
       metal_type,
       purity,
       gross_weight,
@@ -255,7 +244,6 @@ export const updateInventoryItem = async (req: AuthenticatedRequest, res: Respon
       stone_weight,
       making_charges,
       huid_hallmark,
-      // Stones specific
       stone_type,
       shape_cut,
       color,
@@ -267,8 +255,7 @@ export const updateInventoryItem = async (req: AuthenticatedRequest, res: Respon
 
     const existingResult = await query(`SELECT * FROM inventory_items WHERE id = $1 AND shop_id = $2`, [id, shopId]);
     if (existingResult.rowCount === 0) {
-      res.status(404).json({ success: false, message: 'Item not found' });
-      return;
+      return res.status(404).json({ success: false, message: 'Item not found' });
     }
 
     const curStock = current_stock !== undefined ? parseFloat(current_stock) : parseFloat(existingResult.rows[0].current_stock);
@@ -345,25 +332,24 @@ export const updateInventoryItem = async (req: AuthenticatedRequest, res: Respon
       message: 'Item updated successfully.',
       item: result.rows[0],
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[updateInventoryItem Error]:', err);
     res.status(500).json({ success: false, message: 'Failed to update item', error: err.message });
   }
 };
 
-export const deleteInventoryItem = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const deleteInventoryItem = async (req, res) => {
   try {
     const { id } = req.params;
     const shopId = req.shopId;
 
     const result = await query(`DELETE FROM inventory_items WHERE id = $1 AND shop_id = $2 RETURNING id`, [id, shopId]);
     if (result.rowCount === 0) {
-      res.status(404).json({ success: false, message: 'Item not found' });
-      return;
+      return res.status(404).json({ success: false, message: 'Item not found' });
     }
 
     res.json({ success: true, message: 'Item deleted successfully.' });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[deleteInventoryItem Error]:', err);
     res.status(500).json({ success: false, message: 'Failed to delete item', error: err.message });
   }

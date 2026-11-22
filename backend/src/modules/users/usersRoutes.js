@@ -7,7 +7,6 @@ const router = Router();
 
 router.use(authGuard);
 
-// Staff and HR can view staff list; only Admin and Senior HR can create users
 router.get('/', getShopUsers);
 router.post('/', requireRole(['ADMIN', 'SENIOR_HR']), createShopUser);
 

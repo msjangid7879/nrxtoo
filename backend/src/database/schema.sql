@@ -7,7 +7,8 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- 1. Platform Super Admins (Strictly isolated from shop users)
 CREATE TABLE IF NOT EXISTS platform_users (
     id VARCHAR(36) PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    user_id VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(255),
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL DEFAULT 'PLATFORM_SUPER_ADMIN',
@@ -50,14 +51,15 @@ CREATE TABLE IF NOT EXISTS shop_modules (
     CONSTRAINT uq_shop_module UNIQUE(shop_id, module_key)
 );
 
--- 4. Shop Users with Hierarchical Roles:
+-- 4. Shop Users with Unique user_id and Hierarchical Roles:
 -- Roles: 'ADMIN', 'SENIOR_HR', 'JUNIOR_HR', 'STAFF'
 -- hr_level: 'DIRECTOR', 'SENIOR', 'JUNIOR', 'NONE'
 CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(36) PRIMARY KEY,
     shop_id VARCHAR(36) NOT NULL REFERENCES shops(id) ON DELETE CASCADE,
+    user_id VARCHAR(100) UNIQUE NOT NULL, -- Login identifier for everyone
     full_name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    email VARCHAR(255),                  -- Collected during owner signup / staff profile
     password_hash VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL,
     hr_level VARCHAR(50) DEFAULT 'STANDARD',
@@ -67,8 +69,7 @@ CREATE TABLE IF NOT EXISTS users (
     designation VARCHAR(100),
     last_login TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uq_shop_user_email UNIQUE(shop_id, email)
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 5. Inventory Items (Jewellery & Stones)
@@ -131,7 +132,7 @@ CREATE TABLE IF NOT EXISTS stock_transactions (
 
 -- Indexes for optimal performance
 CREATE INDEX IF NOT EXISTS idx_users_shop_id ON users(shop_id);
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_user_id ON users(user_id);
 CREATE INDEX IF NOT EXISTS idx_inventory_shop_id ON inventory_items(shop_id);
 CREATE INDEX IF NOT EXISTS idx_inventory_category ON inventory_items(category);
 CREATE INDEX IF NOT EXISTS idx_inventory_status ON inventory_items(status);

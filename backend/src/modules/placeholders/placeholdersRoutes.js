@@ -1,13 +1,11 @@
-import { Router, Response } from 'express';
+import { Router } from 'express';
 import { authGuard } from '../../middleware/authGuard.js';
-import { AuthenticatedRequest } from '../../types/index.js';
 
 const router = Router();
 
 router.use(authGuard);
 
-// 1. HR & Clients placeholder data
-router.get('/hr-overview', (req: AuthenticatedRequest, res: Response) => {
+router.get('/hr-overview', (req, res) => {
   res.json({
     success: true,
     module: 'Admin, HR & Clients',
@@ -26,8 +24,7 @@ router.get('/hr-overview', (req: AuthenticatedRequest, res: Response) => {
   });
 });
 
-// 2. Accounting & Billing placeholder data
-router.get('/accounting-overview', (req: AuthenticatedRequest, res: Response) => {
+router.get('/accounting-overview', (req, res) => {
   res.json({
     success: true,
     module: 'Accounting & Billing',
@@ -45,8 +42,7 @@ router.get('/accounting-overview', (req: AuthenticatedRequest, res: Response) =>
   });
 });
 
-// 3. Online Shop & E-Commerce placeholder data
-router.get('/ecommerce-overview', (req: AuthenticatedRequest, res: Response) => {
+router.get('/ecommerce-overview', (req, res) => {
   res.json({
     success: true,
     module: 'Online Shop & E-Commerce',
