@@ -5,6 +5,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { PlatformAdminRoute } from './components/PlatformAdminRoute';
 
 import { LoginPage } from './modules/auth/LoginPage';
+import { SignupPage } from './modules/auth/SignupPage';
 import { PlatformAdminLoginPage } from './modules/auth/PlatformAdminLoginPage';
 import { LauncherHubPage } from './modules/launcher/LauncherHubPage';
 import { PlatformAdminDashboard } from './modules/platformAdmin/PlatformAdminDashboard';
@@ -13,13 +14,14 @@ import { HrModulePage } from './modules/hr/HrModulePage';
 import { AccountingModulePage } from './modules/accounting/AccountingModulePage';
 import { EcommerceModulePage } from './modules/ecommerce/EcommerceModulePage';
 
-export const App: React.FC = () => {
+export const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
           {/* Public Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
           <Route path="/platform-admin/login" element={<PlatformAdminLoginPage />} />
 
           {/* Platform Super Admin Console (Strictly isolated from shop operations) */}

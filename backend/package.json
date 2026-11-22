@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
+    "build": "echo Backend is pure JavaScript (no compilation step required)",
     "db:init": "node src/database/init-db.js",
     "db:seed": "node src/database/init-db.js --seed"
   },

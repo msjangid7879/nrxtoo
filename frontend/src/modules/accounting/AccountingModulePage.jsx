@@ -15,10 +15,10 @@ import { useAuth } from '../../context/AuthContext';
 import { TopNavBar } from '../../components/TopNavBar';
 import { apiRequest } from '../../services/api';
 
-export const AccountingModulePage: React.FC = () => {
+export const AccountingModulePage = () => {
   const { activeShop } = useAuth();
   const navigate = useNavigate();
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     apiRequest('/placeholders/accounting-overview')
@@ -93,7 +93,7 @@ export const AccountingModulePage: React.FC = () => {
               GST Tax Collected (3%)
             </span>
             <div className="text-2xl font-extrabold text-slate-900 font-mono mt-1">
-              {activeShop?.currency_symbol || '₹'} 4,35,000.00
+              {activeShop?.currency_symbol || '₹'} 4,35,00,000.00
             </div>
             <span className="text-[11px] text-emerald-600 font-medium mt-1 block">GST Return GSTR-1 Filed</span>
           </div>

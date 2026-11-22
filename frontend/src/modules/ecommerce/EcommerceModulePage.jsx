@@ -15,10 +15,10 @@ import { useAuth } from '../../context/AuthContext';
 import { TopNavBar } from '../../components/TopNavBar';
 import { apiRequest } from '../../services/api';
 
-export const EcommerceModulePage: React.FC = () => {
+export const EcommerceModulePage = () => {
   const { activeShop } = useAuth();
   const navigate = useNavigate();
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     apiRequest('/placeholders/ecommerce-overview')
@@ -111,7 +111,7 @@ export const EcommerceModulePage: React.FC = () => {
             <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
               Pending Web Orders
             </span>
-            <div className="text-2xl font-extrabold text-slate-900 font-serif mt-1">
+            <div className="text-2xl font-extrabold text-slate-900 font-mono mt-1">
               5 Orders
             </div>
             <span className="text-[10px] text-amber-600 font-medium mt-1 block">
@@ -123,7 +123,7 @@ export const EcommerceModulePage: React.FC = () => {
             <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
               Cart Conversion Rate
             </span>
-            <div className="text-2xl font-extrabold text-slate-900 font-serif mt-1">
+            <div className="text-2xl font-extrabold text-slate-900 font-mono mt-1">
               3.4%
             </div>
             <span className="text-[10px] text-slate-400 mt-1 block">Average order value: ₹85,000</span>

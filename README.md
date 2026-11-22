@@ -1,6 +1,8 @@
-# NRXTOO — Multi-Tenant Jewellery & Stones Suite
+# NRXTOO — Multi-Tenant Jewellery & Stones Suite (Pure JavaScript)
 
-A modular full-stack web application built with **React (TypeScript)** + **Node.js (Express)** + **PostgreSQL** featuring **Single Login**, a **Google-Style App Launcher (9-Dots Bento Grid)**, multi-tenant isolation, hierarchical role-based permissions, and the specialized **Jewellery & Stones Shop & Inventory Module**.
+A modular full-stack web application built with **React (JavaScript / JSX)** + **Node.js (Express / ESM)** + **PostgreSQL** featuring **Single Login (User ID + Password)**, a **Google-Style App Launcher (9-Dots Bento Grid)**, multi-tenant boutique isolation, hierarchical role-based permissions, and the specialized **Jewellery & Stones Shop & Inventory Module**.
+
+Runs 100% locally on your machine without Docker.
 
 ---
 
@@ -10,62 +12,62 @@ A modular full-stack web application built with **React (TypeScript)** + **Node.
 d:\NRXTOO PROJECTS\shop and e-commers\
 ├── backend/
 │   ├── src/
-│   │   ├── config/              # PostgreSQL pool, JWT, and environment settings
+│   │   ├── config/              # PostgreSQL pool, JWT, and environment settings (ESM)
 │   │   ├── database/
-│   │   │   ├── schema.sql       # Complete DDL schema with UUIDs, indexes, and cascades
-│   │   │   ├── seed.sql         # Comprehensive seed data for shops, items, and roles
-│   │   │   ├── db.ts            # Pg Client pool with transactions & query log
-│   │   │   └── init-db.ts       # Automated DB initializer & password hasher
+│   │   │   ├── schema.sql       # PostgreSQL DDL with unique user_id, UUIDs, indexes, & cascades
+│   │   │   ├── seed.sql         # Seed data for shops, items, transactions, and user_id credentials
+│   │   │   ├── db.js            # Pg pool with query helper and health checks
+│   │   │   └── init-db.js       # Automated DB initializer & password hasher
 │   │   ├── middleware/
-│   │   │   ├── authGuard.ts     # Bearer JWT validator & shop context injector
-│   │   │   ├── roleGuard.ts     # Hierarchical role & granular permission guards
-│   │   │   ├── platformAdminGuard.ts # Guard isolating platform super admin
-│   │   │   └── errorHandler.ts  # Centralized error handler
+│   │   │   ├── authGuard.js     # Bearer JWT validator & shop context injector
+│   │   │   ├── roleGuard.js     # Hierarchical role & granular permission guards
+│   │   │   ├── platformAdminGuard.js # Guard strictly isolating Platform Super Admin
+│   │   │   └── errorHandler.js  # Centralized error handler
 │   │   ├── modules/
-│   │   │   ├── auth/            # Single login, me, accessible shops
+│   │   │   ├── auth/            # Shop Owner Signup, User ID login, session me
 │   │   │   ├── platformAdmin/   # Super admin console, shop creation, module toggles
 │   │   │   ├── shops/           # Shop profile, branding (logo & banner), GSTIN
-│   │   │   ├── users/           # Staff roster & hierarchical role management
+│   │   │   ├── users/           # Staff roster & hierarchical role management (User ID creation)
 │   │   │   ├── inventory/       # Jewellery & Stones items with dynamic category specs
 │   │   │   ├── transactions/    # Atomic Purchase & Sale flows (updates PostgreSQL stock)
 │   │   │   └── placeholders/    # HR, Accounting & E-Commerce preview endpoints
-│   │   ├── types/               # Strict TypeScript definitions
-│   │   └── server.ts            # Express server entry point
+│   │   └── server.js            # Express server entry point
 │   ├── .env.example
-│   ├── package.json
-│   └── tsconfig.json
+│   └── package.json             # Pure ESM ("type": "module"), Node.js native --watch
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── AppLauncherModal.tsx   # Google-style 9-dots (bento) dropdown popover
-│   │   │   ├── TopNavBar.tsx          # Persistent navigation bar with shop logo, 9-dots & profile
-│   │   │   ├── ProtectedRoute.tsx     # Route protection & shop-enabled module check
-│   │   │   └── PlatformAdminRoute.tsx # Route guard for Platform Super Admin
+│   │   │   ├── AppLauncherModal.jsx   # Google-style 9-dots (bento) dropdown popover
+│   │   │   ├── TopNavBar.jsx          # Persistent top nav bar with shop logo, 9-dots & profile
+│   │   │   ├── ProtectedRoute.jsx     # Route protection & shop-enabled module check
+│   │   │   └── PlatformAdminRoute.jsx # Route guard for Platform Super Admin
 │   │   ├── context/
-│   │   │   └── AuthContext.tsx        # Authentication, active shop, role, enabled modules
+│   │   │   └── AuthContext.jsx        # Authentication (User ID login & Shop Owner signup)
 │   │   ├── modules/
-│   │   │   ├── auth/                  # LoginPage & PlatformAdminLoginPage
+│   │   │   ├── auth/
+│   │   │   │   ├── LoginPage.jsx              # Standard login (User ID + Password, NO email input)
+│   │   │   │   ├── SignupPage.jsx             # New Shop Owner registration (shop details + owner email)
+│   │   │   │   └── PlatformAdminLoginPage.jsx # Platform Super Admin login (User ID: superadmin)
 │   │   │   ├── launcher/              # Google-Style App Launcher Dashboard Hub
 │   │   │   ├── platformAdmin/         # Platform Super Admin Console (/platform-admin)
 │   │   │   ├── inventory/             # Main Module: Inventory, dynamic fields, purchases, sales
-│   │   │   │   ├── InventoryDashboard.tsx
-│   │   │   │   ├── ItemFormModal.tsx    # Category switcher: Jewellery vs Stones dynamic fields
-│   │   │   │   ├── PurchaseModal.tsx    # Inward Purchase flow (increments stock)
-│   │   │   │   ├── SaleModal.tsx        # Outward Sale flow (validates & decrements stock)
-│   │   │   │   └── ShopProfileModal.tsx # Shop branding setup (Logo/Banner upload & URLs)
+│   │   │   │   ├── InventoryDashboard.jsx
+│   │   │   │   ├── ItemFormModal.jsx    # Category switcher: Jewellery vs Stones dynamic fields
+│   │   │   │   ├── PurchaseModal.jsx    # Inward Purchase flow (increments stock)
+│   │   │   │   ├── SaleModal.jsx        # Outward Sale flow (validates & decrements stock)
+│   │   │   │   └── ShopProfileModal.jsx # Shop branding setup (Logo/Banner upload & URLs)
 │   │   │   ├── hr/                    # Admin, HR & Clients (Role comparison & staff roster)
 │   │   │   ├── accounting/            # Accounting & Billing placeholder
 │   │   │   └── ecommerce/             # Online Shop & E-Commerce storefront placeholder
 │   │   ├── services/
-│   │   │   └── api.ts                 # Fetch client with auto JWT injection
-│   │   ├── types/                     # Shared frontend TypeScript interfaces
-│   │   ├── App.tsx                    # React Router configuration
-│   │   ├── main.tsx
+│   │   │   └── api.js                 # Fetch client with auto JWT injection
+│   │   ├── App.jsx                    # React Router configuration
+│   │   ├── main.jsx                   # React 18 root
 │   │   └── index.css                  # Tailwind CSS & custom design system
 │   ├── .env.example
-│   ├── package.json
-│   └── vite.config.ts
+│   ├── package.json                   # Pure JS, Vite React
+│   └── vite.config.js                 # Vite configuration with /api proxy
 ├── .vscode/
 │   ├── launch.json              # 1-click F5 debugging for Backend + Frontend
 │   └── tasks.json               # VS Code tasks for DB init and servers
@@ -75,26 +77,45 @@ d:\NRXTOO PROJECTS\shop and e-commers\
 
 ---
 
+## 🔐 Authentication & Flow Specification
+
+### 1. New Shop Registration (`/signup`) — Shop Owner / Admin Only
+- Located at: `http://localhost:5173/signup` (also linked directly on the login screen via *"New Shop Owner? Register Boutique & Account"*).
+- **Only the Shop Owner / Admin** enters email and boutique details:
+  - **Shop Details**: Boutique Name, Unique Shop Code/Slug, Tagline, Address, Phone, GSTIN/Tax ID, Currency.
+  - **Owner Credentials**: Owner Full Name, Owner Email Address (saved for shop business records), **Chosen Unique User ID** (e.g. `rajesh_admin` or `owner_jaipur`), and Password.
+- Automatically:
+  1. Creates the shop in PostgreSQL.
+  2. Enables the 4 core modules (`inventory`, `hr`, `accounting`, `ecommerce`).
+  3. Registers the user as `ADMIN` with full permissions.
+  4. Generates JWT and immediately logs into the **Google-Style App Launcher Hub**.
+
+### 2. Regular Login (`/login`) — User ID + Password for Everyone
+- Located at: `http://localhost:5173/login`
+- **Zero Email on Login Screen**: Neither Shop Owner, Admin, Senior HR, Junior HR, Staff, nor Platform Admin enter an email to log in.
+- Every user signs in strictly using their **Unique User ID + Password**.
+- The login form features **1-Click Quick Demo Account** buttons to instantly fill credentials for all 4 roles.
+
+---
+
 ## 🔑 Demo Accounts & Pre-Configured Credentials
 
-The system seeds multiple pre-configured roles across two sample tenant shops:
+The database initializer pre-seeds standard accounts across multi-tenant shops:
 
 ### 1. Shop Tenant Users (`/login`):
 * **Tenant 1**: `NRXTOO Royal Jewellers & Gemstones` (Jaipur) — *All 4 modules enabled*
 * **Tenant 2**: `NRXTOO Artisan Silver Studio` (Mumbai) — *HR & Accounting disabled to test dynamic filtering*
 
-| Role | Email | Password | Scope & Access Rights |
+| Role | Unique User ID | Password | Scope & Access Rights |
 | :--- | :--- | :--- | :--- |
-| **👑 Admin** | `admin@nrxtoo.com` | `Admin123!` | Full control over inventory, purchases, sales, shop branding, HR and billing. |
-| **⭐ Senior HR** | `senior.hr@nrxtoo.com` | `HrSenior123!` | Staff roster, employee creation, view inventory & sales; no financial config edit. |
-| **🔹 Junior HR** | `junior.hr@nrxtoo.com` | `HrJunior123!` | View-only staff directory and inventory access. |
-| **👤 Staff** | `staff@nrxtoo.com` | `Staff123!` | Counter sales, invoice billing, inventory viewing; no HR/admin edit rights. |
-
-> **Tip**: The login page (`/login`) includes **1-click Quick Demo Fill buttons** for each role!
+| **👑 Shop Owner / Admin** | `admin_royal` | `Admin123!` | Full control over inventory, purchases, sales, shop branding, HR, and billing. |
+| **⭐ Senior HR** | `senior_hr` | `HrSenior123!` | Staff roster, create employees with User IDs, view inventory & sales; no financial config edit. |
+| **🔹 Junior HR** | `junior_hr` | `HrJunior123!` | View-only staff directory and inventory access. |
+| **👤 Staff** | `staff_kavita` | `Staff123!` | Counter sales, invoice billing, inventory viewing; no HR/admin edit rights. |
 
 ### 2. Platform Super Admin (`/platform-admin/login`):
 * **URL**: `http://localhost:5173/platform-admin/login`
-* **Email**: `superadmin@nrxtoo.com`
+* **Unique User ID**: `superadmin`
 * **Password**: `SuperAdmin123!`
 * **Isolation**: Operates outside shop tenancy. Manages all shops, creates new tenant accounts, and can toggle any of the 4 modules (`inventory`, `hr`, `accounting`, `ecommerce`) ON or OFF for any shop.
 
@@ -103,7 +124,7 @@ The system seeds multiple pre-configured roles across two sample tenant shops:
 ## 💎 Features Walkthrough
 
 ### 1. Single Login & Google-Style App Launcher Hub
-- **Authentication**: JWT token payload carries `userId`, `email`, `shopId`, `role`, `hrLevel`, and granular `permissions`.
+- **Authentication**: JWT token payload carries `userId`, `user_id`, `shopId`, `role`, `hrLevel`, and granular `permissions`.
 - **Launcher Hub (`/launcher`)**: Welcomes user with shop branding and large Google Workspace-style app tiles.
 - **Dynamic Module Visibility**: Displays **ONLY** modules enabled for that shop tenant.
 - **Persistent 9-Dots Switcher (`TopNavBar`)**: Always visible across all modules with an interactive bento dropdown popover, allowing seamless switching without losing active shop context.
@@ -136,16 +157,16 @@ The system seeds multiple pre-configured roles across two sample tenant shops:
   - **Stock Movement Drawer**: Inspect all historic purchase and sale movements.
 
 ### 3. Placeholder Testing Modules
-- **Admin, HR & Clients (`/hr`)**: Test role hierarchy (Admin vs Senior HR vs Junior HR vs Staff) and view live employee roster.
+- **Admin, HR & Clients (`/hr`)**: Test role hierarchy (Admin vs Senior HR vs Junior HR vs Staff) and view live employee roster with unique login User IDs.
 - **Accounting & Billing (`/accounting`)**: General ledger overview, GST collected, and tax vouchers.
 - **Online Shop & E-Commerce (`/ecommerce`)**: Public storefront link, catalog sync status, and web orders.
 
 ---
 
-## 🛠️ Step-by-Step Setup Guide (Running on Local Machine)
+## 🛠️ Step-by-Step Setup Guide (Running Locally)
 
 ### Prerequisites:
-1. **Node.js** (v18, v20, or v22 recommended)
+1. **Node.js** (v18, v20, or v22)
 2. **PostgreSQL** installed and running on `localhost:5432`
 
 ---
@@ -153,7 +174,7 @@ The system seeds multiple pre-configured roles across two sample tenant shops:
 ### Step 1: Configure Environment Variables
 
 #### Backend `.env` (`backend/.env`):
-Create or verify `backend/.env` (a ready template is provided at `backend/.env.example`):
+A ready `.env` file is provided at `backend/.env` (and template at `backend/.env.example`):
 
 ```env
 PORT=5000
@@ -164,7 +185,7 @@ CORS_ORIGIN=http://localhost:5173
 JWT_SECRET=nrxtoo-super-secret-jwt-key-2026-change-in-production
 JWT_EXPIRES_IN=7d
 
-# PostgreSQL Credentials (adjust user/password if your local Postgres differs)
+# PostgreSQL Credentials (adjust if your local Postgres differs)
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
@@ -176,22 +197,11 @@ DB_POOL_MAX=20
 UPLOAD_DIR=./uploads
 ```
 
-#### Frontend `.env` (`frontend/.env`):
-Create or verify `frontend/.env`:
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
 ---
 
 ### Step 2: Initialize Database and Seed Sample Data
 
-The project includes an automated database initializer (`backend/src/database/init-db.ts`) that:
-1. Connects to local PostgreSQL.
-2. Creates database `nrxtoo_jewellery_db` if it doesn't already exist.
-3. Applies table schemas, constraints, and indexes from `schema.sql`.
-4. Hashes passwords using bcrypt and seeds sample shops, users, jewellery items with HUIDs, stone items with GIA certificates, and initial transactions.
+The database initializer (`backend/src/database/init-db.js`) creates the database `nrxtoo_jewellery_db`, applies `schema.sql`, hashes passwords using bcrypt, and seeds initial shops, users with unique `user_id`s, jewellery items with HUID hallmarks, stones with GIA certificates, and transactions.
 
 Run from backend directory:
 ```bash
@@ -200,37 +210,18 @@ npm run db:init
 ```
 *(Or from project root: `npm run db:init`)*
 
-You will see:
-```
-====================================================
-   NRXTOO Jewellery Suite - Database Initializer   
-====================================================
-[Init DB] Connecting to PostgreSQL at localhost:5432/nrxtoo_jewellery_db...
-[Init DB] ✓ Schema created successfully.
-[Init DB] Generating secure password hashes and seeding data...
-[Init DB] ✓ Sample data seeded successfully:
-   - Platform Super Admin: superadmin@nrxtoo.com / SuperAdmin123!
-   - Shop Admin:           admin@nrxtoo.com / Admin123!
-   - Senior HR:            senior.hr@nrxtoo.com / HrSenior123!
-   - Junior HR:            junior.hr@nrxtoo.com / HrJunior123!
-   - Staff:                staff@nrxtoo.com / Staff123!
-====================================================
-```
-
 ---
 
-### Step 3: Run the Application in VS Code
+### Step 3: Run the Application
 
-You can run both servers simultaneously using either method:
-
-#### Option A: Using Two Terminals in VS Code
+#### Option A: Two Terminals
 
 **Terminal 1 (Backend API Server):**
 ```bash
 cd backend
 npm run dev
 ```
-Backend will start at: **`http://localhost:5000`** (Health check: `http://localhost:5000/api/health`)
+Backend will start with native Node.js `--watch` at: **`http://localhost:5000`** (Health check: `http://localhost:5000/api/health`)
 
 **Terminal 2 (Frontend Client):**
 ```bash
@@ -240,35 +231,62 @@ npm run dev
 Frontend will start at: **`http://localhost:5173`**
 
 #### Option B: Using VS Code 1-Click Debugger (F5)
-1. Open this repository folder in VS Code.
-2. Press **`F5`** or go to the **Run & Debug** panel (`Ctrl+Shift+D`).
+1. Open this workspace in VS Code.
+2. Press **`F5`** or go to **Run & Debug** (`Ctrl+Shift+D`).
 3. Select **"Full Stack: Backend + Frontend"** and press Play.
-4. VS Code starts both the Express API and Vite server automatically!
+4. VS Code starts both the Express API and Vite server simultaneously.
 
 ---
 
-## 🌐 Navigating the Application
+## 🧪 Verification & Testing Guide
 
-1. Open your browser and visit: **`http://localhost:5173`**
-2. You will be greeted by the **NRXTOO Sign In** page.
-3. Click any of the **Demo Role Sign In** buttons (e.g. `👑 Admin`).
-4. Click **Sign In to App Launcher**:
-   - You land on the **Google-Style App Launcher Hub** (`/launcher`).
-   - Notice the persistent **9-dots icon** in the top navigation bar. Clicking it opens the interactive **Bento Grid popover**.
-5. Click **Shop & Inventory**:
-   - Explore the item catalogue with dynamic tabs: **Jewellery** vs **Stones**.
-   - Click **+ New Item** to test dynamic category-specific fields:
-     - Selecting **Jewellery** activates metal type, purity (22K Hallmark), gross/net weight, and 6-digit HUID code.
-     - Selecting **Stones** activates stone type (Sapphire, Diamond, Emerald), cut, color, clarity, carat weight, origin, and lab cert #.
-   - Click **Record Sale** or **Purchase Stock** to test real-time PostgreSQL stock transactions.
-6. Click the 9-dots button and navigate to **Platform Super Admin** (`/platform-admin`):
-   - Sign in with `superadmin@nrxtoo.com` / `SuperAdmin123!`.
-   - Toggle any module (e.g. turn off *Admin, HR & Clients* or *Accounting & Billing* for a shop).
-   - Switch back to that shop's launcher: that module will instantly disappear or lock from access!
+### 1. Test New Shop Owner Registration Flow:
+1. Open `http://localhost:5173/login`.
+2. Click the link at the bottom: **"New Shop Owner? Register Boutique & Account &rarr;"** (or go to `http://localhost:5173/signup`).
+3. Fill in:
+   - **Shop Name**: e.g., `Kohinoor Heritage Diamonds`
+   - **Shop Code/Slug**: `kohinoor-heritage`
+   - **Showroom Address**: `Shop 12, Zaveri Bazaar, Mumbai`
+   - **Owner Full Name**: `Aakash Mehta`
+   - **Owner Email**: `aakash@kohinoor.com` (collected for records)
+   - **Chosen User ID**: `aakash_admin`
+   - **Password**: `Kohinoor123!`
+4. Click **Create Shop & Enter App Launcher**.
+5. You will immediately be logged in as `ADMIN` with the new shop created in PostgreSQL and landed on the Google-Style App Launcher Hub!
+
+### 2. Test User ID Login (No Email Requested):
+1. Sign out (via the profile dropdown at the top right).
+2. On `http://localhost:5173/login`, verify that the login form asks **ONLY** for:
+   - **Unique User ID**
+   - **Password**
+3. Enter `admin_royal` and `Admin123!` (or click the **👑 Admin** 1-click button).
+4. Click **Sign In with User ID**. You will successfully log in!
+5. Repeat for staff roles: `senior_hr` / `HrSenior123!`, `junior_hr` / `HrJunior123!`, `staff_kavita` / `Staff123!`.
+
+### 3. Test Google-Style 9-Dots App Switcher:
+1. In the top navigation bar, click the **9-dots icon** (`AppLauncherModal`).
+2. The Google Workspace-style bento grid opens, showing active modules for that tenant shop.
+3. Switch between **Shop & Inventory**, **Admin, HR & Clients**, **Accounting & Billing**, and **Online Shop & E-Commerce**.
+
+### 4. Test Jewellery vs Stones Dynamic Inventory:
+1. Go to **Shop & Inventory** (`/inventory`).
+2. Click **+ New Item**.
+3. Toggle category to **Jewellery**:
+   - Notice dynamic fields: Metal Type (Gold, Silver, Platinum), Purity (22K, 18K), Gross Weight, Net Weight, Making Charges, and 6-digit HUID Hallmark code (`huid_hallmark`).
+4. Toggle category to **Stones**:
+   - Notice dynamic fields: Stone Type (Diamond, Blue Sapphire, Emerald), Shape Cut, Color, Clarity, Carat Weight, Treatment/Origin, and Lab Certificate No (`lab_certificate_no`).
+5. Test recording a **Stock Purchase** or **Counter Sale** and observe atomic stock updates in PostgreSQL.
+
+### 5. Test Platform Super Admin Isolation:
+1. Visit `http://localhost:5173/platform-admin/login`.
+2. Sign in with User ID: `superadmin` / Password: `SuperAdmin123!`.
+3. In the Platform Super Admin Console, toggle modules ON/OFF for any tenant shop.
+4. Changes reflect immediately in that shop's Google-style App Launcher!
 
 ---
 
 ## 🛡️ License & Credits
 
 Developed for **NRXTOO Multi-Tenant Suite** — Hallmark Jewellery & Fine Stones.
+Pure JavaScript (`.js` & `.jsx`) • PostgreSQL • Node.js • React • Vite.
 All rights reserved.
