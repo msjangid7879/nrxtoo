@@ -145,7 +145,7 @@ export const PlatformAdminDashboard = () => {
               </span>
             </div>
             <p className="text-[10px] text-slate-400 font-mono">
-              Global Tenant Management & Module Matrix
+              Global Showroom Network & Service Activation
             </p>
           </div>
         </div>
@@ -194,7 +194,7 @@ export const PlatformAdminDashboard = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-slate-900/80 border border-purple-900/30 rounded-2xl p-4">
             <span className="text-[11px] font-mono text-purple-400 uppercase tracking-wider block">
-              Total Tenant Shops
+              Registered Boutiques
             </span>
             <div className="flex items-baseline justify-between mt-2">
               <span className="text-3xl font-extrabold text-white font-mono">{stats.total_shops}</span>
@@ -211,7 +211,7 @@ export const PlatformAdminDashboard = () => {
               <span className="text-3xl font-extrabold text-white font-mono">{stats.total_users}</span>
               <Users className="w-6 h-6 text-purple-400 opacity-70" />
             </div>
-            <span className="text-[10px] text-slate-400 mt-1 block">Across all tenants</span>
+            <span className="text-[10px] text-slate-400 mt-1 block">Across all showrooms</span>
           </div>
 
           <div className="bg-slate-900/80 border border-purple-900/30 rounded-2xl p-4">
@@ -234,7 +234,7 @@ export const PlatformAdminDashboard = () => {
                 ₹{(stats.total_inventory_value || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
               </span>
             </div>
-            <span className="text-[10px] text-emerald-400 mt-1 block">Total platform inventory value</span>
+            <span className="text-[10px] text-emerald-400 mt-1 block">Total showroom inventory value</span>
           </div>
         </div>
 
@@ -242,10 +242,10 @@ export const PlatformAdminDashboard = () => {
         <div className="flex items-center justify-between pt-4">
           <div>
             <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-              <span>Tenant Shops & Module Activation Matrix</span>
+              <span>Boutique Showrooms & Service Activation Matrix</span>
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
-              Enable or disable specific modules per shop. Toggled changes immediately affect that shop's Google-style App Launcher.
+              Enable or disable specific modules per boutique. Activated services immediately update on the boutique's app launcher.
             </p>
           </div>
 
@@ -253,7 +253,7 @@ export const PlatformAdminDashboard = () => {
             <button
               onClick={fetchPlatformData}
               className="p-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl border border-slate-800 transition-colors"
-              title="Refresh tenants"
+              title="Refresh showrooms"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -263,7 +263,7 @@ export const PlatformAdminDashboard = () => {
               className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold rounded-xl shadow-lg shadow-purple-900/40 flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              <span>Create New Shop Tenant</span>
+              <span>Register New Boutique Showroom</span>
             </button>
           </div>
         </div>
@@ -315,7 +315,7 @@ export const PlatformAdminDashboard = () => {
                       </div>
 
                       <p className="text-xs text-slate-400 mt-1 max-w-xl">
-                        {shop.tagline || shop.address || 'Multi-tenant shop suite instance'}
+                        {shop.tagline || shop.address || 'Boutique showroom workspace'}
                       </p>
 
                       <div className="flex items-center gap-4 mt-2 text-xs text-slate-400 font-mono">
@@ -335,10 +335,10 @@ export const PlatformAdminDashboard = () => {
                   </div>
                 </div>
 
-                {/* Module Toggles Row */}
+                {/* Service Activation Row */}
                 <div className="pt-5">
                   <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-3">
-                    Active Modules Switcher for this Tenant:
+                    Active Services for this Boutique:
                   </span>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -450,7 +450,7 @@ export const PlatformAdminDashboard = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl">
             <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-              <h3 className="text-base font-bold text-white">Create New Tenant Shop</h3>
+              <h3 className="text-base font-bold text-white">Register New Boutique Showroom</h3>
               <button
                 onClick={() => setIsCreateShopModalOpen(false)}
                 className="text-slate-400 hover:text-white p-1"

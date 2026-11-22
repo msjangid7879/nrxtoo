@@ -105,9 +105,11 @@ export const AppLauncherModal = ({ isOpen, onClose }) => {
             ))}
           </div>
           <div>
-            <h3 className="text-sm font-bold text-slate-800 tracking-tight">NRXTOO App Launcher</h3>
+            <h3 className="text-sm font-bold text-slate-800 tracking-tight">
+              {activeShop?.name ? `${activeShop.name} Apps` : 'Boutique App Launcher'}
+            </h3>
             <p className="text-xs text-slate-400 font-medium truncate max-w-[190px]">
-              {activeShop?.name || 'Active Shop'}
+              {activeShop?.tagline || 'Showroom Management'}
             </p>
           </div>
         </div>
@@ -166,13 +168,13 @@ export const AppLauncherModal = ({ isOpen, onClose }) => {
         })}
       </div>
 
-      {/* Modules Disabled Info if some are turned off for tenant */}
+      {/* Modules Disabled Info if some are turned off for boutique */}
       {availableModules.length < ALL_MODULE_DEFS.length && (
         <div className="pt-2 pb-1 border-t border-slate-100">
           <div className="flex items-center gap-1.5 text-[11px] text-slate-400 bg-slate-50 p-2 rounded-lg">
             <Lock className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
             <span>
-              {ALL_MODULE_DEFS.length - availableModules.length} module(s) disabled by Platform Admin for this shop.
+              {ALL_MODULE_DEFS.length - availableModules.length} additional service(s) available for activation.
             </span>
           </div>
         </div>
@@ -190,7 +192,7 @@ export const AppLauncherModal = ({ isOpen, onClose }) => {
           Launcher Hub
         </button>
         <span className="text-slate-300">•</span>
-        <span className="text-[11px] text-slate-400">Suite v1.0 • Pure JavaScript</span>
+        <span className="text-[11px] text-slate-400">Showroom Suite v1.0 • Verified Secure</span>
       </div>
     </div>
   );

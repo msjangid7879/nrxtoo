@@ -44,7 +44,14 @@ d:\NRXTOO PROJECTS\shop and e-commers\
 │   │   │   └── PlatformAdminRoute.jsx # Route guard for Platform Super Admin
 │   │   ├── context/
 │   │   │   └── AuthContext.jsx        # Authentication (User ID login & Shop Owner signup)
+│   │   ├── data/
+│   │   │   └── productsData.js        # Comprehensive definitions for all 5 NRXTOO modules
 │   │   ├── modules/
+│   │   │   ├── public/
+│   │   │   │   ├── HomePage.jsx           # Public Landing Page (/) with Hero & Products cards
+│   │   │   │   ├── ProductDetailPage.jsx  # Dedicated module detail page (/products/:moduleSlug)
+│   │   │   │   ├── PublicNavbar.jsx       # Public top navigation with Products dropdown
+│   │   │   │   └── PublicFooter.jsx       # Public footer with compliance standards
 │   │   │   ├── auth/
 │   │   │   │   ├── LoginPage.jsx              # Standard login (User ID + Password, NO email input)
 │   │   │   │   ├── SignupPage.jsx             # New Shop Owner registration (shop details + owner email)

@@ -75,7 +75,7 @@ export const EcommerceModulePage = () => {
                 <span className="text-xs text-slate-400">SSL 256-bit Encrypted</span>
               </div>
               <p className="text-sm font-bold text-white mt-0.5">
-                https://store.nrxtoo.com/{activeShop?.slug || 'royal-jewellers'}
+                https://{activeShop?.slug || 'royal-jewellers'}.luxuryjewellers.com
               </p>
             </div>
           </div>
@@ -84,7 +84,7 @@ export const EcommerceModulePage = () => {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              alert(`Simulating opening public online boutique for ${activeShop?.name}`);
+              alert(`Opening customer storefront preview for ${activeShop?.name || 'your boutique'}`);
             }}
             className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 flex items-center gap-1.5 transition-colors self-start sm:self-auto"
           >

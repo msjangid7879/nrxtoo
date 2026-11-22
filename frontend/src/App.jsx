@@ -4,9 +4,16 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { PlatformAdminRoute } from './components/PlatformAdminRoute';
 
+// Public Landing & Product Detail Pages
+import { HomePage } from './modules/public/HomePage';
+import { ProductDetailPage } from './modules/public/ProductDetailPage';
+
+// Auth Pages
 import { LoginPage } from './modules/auth/LoginPage';
 import { SignupPage } from './modules/auth/SignupPage';
 import { PlatformAdminLoginPage } from './modules/auth/PlatformAdminLoginPage';
+
+// Multi-Tenant Suite & App Launcher
 import { LauncherHubPage } from './modules/launcher/LauncherHubPage';
 import { PlatformAdminDashboard } from './modules/platformAdmin/PlatformAdminDashboard';
 import { InventoryDashboard } from './modules/inventory/InventoryDashboard';
@@ -19,6 +26,11 @@ export const App = () => {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          {/* Public Home / Landing Page */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products" element={<HomePage scrollTo="products" />} />
+          <Route path="/products/:moduleSlug" element={<ProductDetailPage />} />
+
           {/* Public Auth Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
@@ -84,9 +96,8 @@ export const App = () => {
             }
           />
 
-          {/* Root redirect */}
-          <Route path="/" element={<Navigate to="/launcher" replace />} />
-          <Route path="*" element={<Navigate to="/launcher" replace />} />
+          {/* Catch-all redirect to Home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

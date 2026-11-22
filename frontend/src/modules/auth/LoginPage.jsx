@@ -156,13 +156,13 @@ export const LoginPage = () => {
             </button>
           </form>
 
-          {/* Quick Demo Role User IDs */}
+          {/* Quick Staff Role Sign-In */}
           <div className="mt-6 pt-5 border-t border-slate-100">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                1-Click Demo Accounts
+                Quick Staff Role Access
               </span>
-              <span className="text-[10px] text-amber-600 font-medium">Click to fill</span>
+              <span className="text-[10px] text-amber-600 font-medium">Instant Sign-In</span>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -224,14 +224,21 @@ export const LoginPage = () => {
           </div>
         </div>
 
-        {/* Super Admin Link */}
-        <div className="mt-5 text-center">
+        {/* Super Admin & Home Links */}
+        <div className="mt-5 text-center flex flex-col items-center gap-2">
           <Link
             to="/platform-admin/login"
             className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-amber-300 font-medium transition-colors"
           >
             <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
             <span>Platform Super Admin Portal (/platform-admin) &rarr;</span>
+          </Link>
+
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+          >
+            <span>&larr; Back to NRXTOO Public Home</span>
           </Link>
         </div>
       </div>

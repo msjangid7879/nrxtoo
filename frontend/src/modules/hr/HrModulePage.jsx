@@ -90,7 +90,7 @@ export const HrModulePage = () => {
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-1">
-                Testing role-based routing, Google-style app switcher, and User ID staff logins.
+                Staff roster administration, role permission management, and staff account credentials.
               </p>
             </div>
           </div>

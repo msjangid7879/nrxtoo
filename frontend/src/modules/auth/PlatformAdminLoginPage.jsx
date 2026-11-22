@@ -41,10 +41,10 @@ export const PlatformAdminLoginPage = () => {
             Platform Super Admin
           </h1>
           <p className="text-xs text-purple-300 font-mono mt-1">
-            NRXTOO Suite Multi-Tenant Master Console
+            Central Showroom Network Console
           </p>
           <div className="mt-2 inline-block px-2.5 py-1 rounded-full bg-purple-900/40 border border-purple-700/50 text-[11px] text-purple-300">
-            Isolated from Shop Tenancy
+            Dedicated Administrative Portal
           </div>
         </div>
 
@@ -113,7 +113,7 @@ export const PlatformAdminLoginPage = () => {
             </button>
           </form>
 
-          {/* Quick Demo Fill */}
+          {/* Quick Staff Sign-In Fill */}
           <div className="mt-5 pt-4 border-t border-slate-800 flex items-center justify-between">
             <span className="text-[11px] text-slate-400 font-mono">User ID: superadmin</span>
             <button
@@ -124,17 +124,24 @@ export const PlatformAdminLoginPage = () => {
               }}
               className="text-[11px] text-purple-400 hover:text-purple-300 underline font-medium"
             >
-              Fill Demo Pass
+              Fill Credentials
             </button>
           </div>
         </div>
 
-        <div className="mt-5 text-center">
+        <div className="mt-5 text-center flex flex-col items-center gap-2">
           <Link
             to="/login"
             className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors"
           >
             <span>&larr; Return to Regular Shop Staff Login</span>
+          </Link>
+
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+          >
+            <span>&larr; Back to NRXTOO Public Home</span>
           </Link>
         </div>
       </div>

@@ -65,51 +65,44 @@ export const TopNavBar = ({ currentModuleName, onOpenShopProfile }) => {
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 lg:px-6 h-16 flex items-center justify-between shadow-xs">
-      {/* Left side: Brand, Shop branding, and Module Breadcrumb */}
-      <div className="flex items-center gap-3 md:gap-5">
+      {/* Left side: Prominent Shop Logo, Shop Name, and Module Breadcrumb */}
+      <div className="flex items-center gap-3 md:gap-4">
         <button
           onClick={() => navigate('/launcher')}
-          className="flex items-center gap-2 group text-left focus:outline-none"
+          className="flex items-center gap-3 group text-left focus:outline-none cursor-pointer"
+          title="Return to Boutique App Launcher"
         >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-0.5 shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform flex items-center justify-center">
-            <span className="text-white font-extrabold text-sm tracking-wider font-serif">N</span>
-          </div>
-          <div className="hidden sm:block">
-            <div className="flex items-center gap-1">
-              <span className="font-extrabold text-sm tracking-wider text-slate-900 font-serif">NRXTOO</span>
-              <span className="text-[10px] uppercase font-semibold text-amber-600 bg-amber-50 px-1 rounded">SUITE</span>
-            </div>
-            <p className="text-[10px] text-slate-400 font-medium -mt-0.5">Jewellery & Stones</p>
-          </div>
-        </button>
-
-        <span className="text-slate-300 hidden sm:inline">/</span>
-
-        {/* Shop Name & Logo */}
-        <div className="flex items-center gap-2 max-w-[200px] md:max-w-[320px]">
           {activeShop?.logo_url ? (
             <img
               src={activeShop.logo_url}
               alt={activeShop.name}
-              className="w-7 h-7 rounded-lg object-cover border border-slate-200 shadow-2xs"
+              className="w-10 h-10 rounded-xl object-cover border border-amber-200/80 shadow-xs group-hover:scale-105 transition-transform"
             />
           ) : (
-            <div className="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
-              <Store className="w-4 h-4" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-0.5 shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center">
+              <div className="w-full h-full bg-stone-900 rounded-[10px] flex items-center justify-center text-amber-400 font-bold font-serif text-sm">
+                {activeShop?.name ? activeShop.name.charAt(0).toUpperCase() : <Store className="w-5 h-5 text-amber-400" />}
+              </div>
             </div>
           )}
 
-          <div className="truncate">
-            <h2 className="text-xs md:text-sm font-semibold text-slate-800 truncate" title={activeShop?.name}>
-              {activeShop?.name || 'Active Shop'}
-            </h2>
-            {currentModuleName && (
-              <span className="inline-block text-[10px] font-medium text-amber-700 bg-amber-50/80 px-1.5 py-0.2 rounded">
-                {currentModuleName}
-              </span>
-            )}
+          <div className="max-w-[200px] sm:max-w-[340px] truncate">
+            <h1 className="text-sm sm:text-base font-bold text-slate-900 font-serif truncate leading-tight group-hover:text-amber-700 transition-colors">
+              {activeShop?.name || 'My Jewellery Boutique'}
+            </h1>
+            <p className="text-[11px] text-slate-400 font-medium truncate leading-tight mt-0.5">
+              {activeShop?.tagline || 'Fine Jewellery & Rare Gemstones'}
+            </p>
           </div>
-        </div>
+        </button>
+
+        {currentModuleName && (
+          <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-slate-200">
+            <span className="text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg">
+              {currentModuleName}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Right side: Google-Style 9-Dots Launcher Switcher + User Profile */}
@@ -217,10 +210,10 @@ export const TopNavBar = ({ currentModuleName, onOpenShopProfile }) => {
                     navigate('/platform-admin/login');
                     setIsUserMenuOpen(false);
                   }}
-                  className="w-full text-left px-2.5 py-1.5 text-xs font-medium text-purple-700 hover:bg-purple-50 rounded-lg flex items-center gap-2"
+                  className="w-full text-left px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-lg flex items-center gap-2"
                 >
                   <Shield className="w-4 h-4 text-purple-600" />
-                  <span>Platform Super Admin</span>
+                  <span>Network Administrator Portal</span>
                 </button>
               </div>
 

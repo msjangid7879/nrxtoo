@@ -76,10 +76,10 @@ export const LauncherHubPage = () => {
                   </span>
                 </div>
                 <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white font-serif">
-                  {activeShop?.name || 'NRXTOO Suite'}
+                  {activeShop?.name || 'My Jewellery Boutique'}
                 </h1>
                 <p className="text-xs md:text-sm text-amber-200/80 mt-1 max-w-xl">
-                  {activeShop?.tagline || 'Welcome to your NRXTOO Jewellery & Stones Management Console.'}
+                  {activeShop?.tagline || 'Welcome to your boutique showroom management and inventory portal.'}
                 </p>
               </div>
             </div>
@@ -167,18 +167,18 @@ export const LauncherHubPage = () => {
           ))}
         </div>
 
-        {/* Disabled Modules (if any are toggled off by Platform Admin) */}
+        {/* Additional Boutique Services (if any are not yet activated) */}
         {disabledModuleDefs.length > 0 && (
           <div className="bg-slate-100/80 rounded-2xl p-5 border border-slate-200 mb-10">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Lock className="w-4 h-4 text-slate-500" />
                 <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Modules Disabled for {activeShop?.name}
+                  Additional Services for {activeShop?.name}
                 </h3>
               </div>
               <span className="text-[11px] text-slate-400">
-                Can be enabled via Platform Super Admin
+                Contact store administration to activate
               </span>
             </div>
 
@@ -198,7 +198,7 @@ export const LauncherHubPage = () => {
                     </div>
                   </div>
                   <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
-                    Disabled
+                    Inactive
                   </span>
                 </div>
               ))}
@@ -206,11 +206,11 @@ export const LauncherHubPage = () => {
           </div>
         )}
 
-        {/* Multi-tenant Architecture Box */}
+        {/* Showroom Operations & Security Summary Box */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
           <h3 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-amber-600" />
-            <span>Multi-Tenant Architecture & Current Session</span>
+            <span>Showroom Operations & Security Summary</span>
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
@@ -220,20 +220,20 @@ export const LauncherHubPage = () => {
               </span>
               <p className="font-bold text-slate-800 text-sm mt-1">{role}</p>
               <p className="text-slate-500 text-[11px] mt-0.5">
-                HR Level: <span className="font-semibold text-slate-700">{user?.hr_level || 'STANDARD'}</span>
+                Staff Grade: <span className="font-semibold text-slate-700">{user?.hr_level || 'STANDARD'}</span>
               </p>
               <div className="mt-2 text-[10px] text-slate-400 font-mono">
-                Permissions: {user?.permissions?.length || 0} active flags
+                Permissions: {user?.permissions?.length || 0} active privileges
               </div>
             </div>
 
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/60">
               <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                Active Tenant Database Scope
+                Authorized Boutique Profile
               </span>
               <p className="font-bold text-slate-800 text-sm mt-1 truncate">{activeShop?.name}</p>
               <p className="text-slate-500 text-[11px] mt-0.5 truncate">
-                {activeShop?.address || 'Jaipur Souk, India'}
+                {activeShop?.address || 'Showroom Suite, India'}
               </p>
               <div className="mt-2 text-[10px] text-amber-700 font-semibold">
                 Currency: {activeShop?.currency_symbol} ({activeShop?.currency})
@@ -242,11 +242,11 @@ export const LauncherHubPage = () => {
 
             <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/60">
               <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                Authentication Mode
+                Staff Access & Sign-In Mode
               </span>
               <p className="font-bold text-slate-800 text-sm mt-1">User ID: {user?.user_id}</p>
               <p className="text-slate-500 text-[11px] mt-0.5">
-                Pure JavaScript • Node.js Native Watch & ESM • Zero Email on Login
+                Encrypted Vault Session • Unique Staff User ID Access
               </p>
             </div>
           </div>

@@ -373,14 +373,23 @@ export const SignupPage = () => {
             </div>
           </form>
 
-          {/* Return to Login */}
-          <div className="mt-6 pt-4 border-t border-slate-100 text-center">
+          {/* Return to Login & Home */}
+          <div className="mt-6 pt-4 border-t border-slate-100 text-center space-y-2">
             <p className="text-xs text-slate-500">
               Already registered or have a Staff User ID?{' '}
               <Link to="/login" className="font-semibold text-amber-600 hover:text-amber-700 underline">
                 Sign in with User ID &rarr;
               </Link>
             </p>
+
+            <div>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <span>&larr; Back to NRXTOO Public Home</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

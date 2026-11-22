@@ -13,7 +13,7 @@ export const ProtectedRoute = ({ children, requiredModule, allowedRoles }) => {
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-amber-600 border-t-transparent rounded-full animate-spin"></div>
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">
-            Loading NRXTOO Suite...
+            Loading Boutique Workspace...
           </p>
         </div>
       </div>
@@ -44,10 +44,10 @@ export const ProtectedRoute = ({ children, requiredModule, allowedRoles }) => {
               Return to App Launcher
             </a>
             <a
-              href="/platform-admin/login"
+              href="/launcher"
               className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
             >
-              Platform Admin Module Manager &rarr;
+              Contact Store Administrator &rarr;
             </a>
           </div>
         </div>
