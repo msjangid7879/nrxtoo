@@ -1,0 +1,27 @@
+{
+  "name": "nrxtoo-suite",
+  "version": "1.0.0",
+  "description": "NRXTOO Multi-Tenant Jewellery & Stones Suite with Google-Style App Launcher",
+  "private": true,
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "db:init": "cd backend && npm run db:init",
+    "db:seed": "cd backend && npm run db:seed",
+    "build:all": "cd backend && npm run build && cd ../frontend && npm run build"
+  },
+  "keywords": [
+    "jewellery",
+    "gemstones",
+    "hallmark",
+    "huid",
+    "multi-tenant",
+    "app-launcher",
+    "react",
+    "express",
+    "postgresql"
+  ],
+  "author": "NRXTOO",
+  "license": "ISC"
+}
